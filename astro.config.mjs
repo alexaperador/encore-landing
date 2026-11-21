@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -15,7 +15,7 @@ export default defineConfig({
 
   // Pages are prerendered as static HTML. Only /api/waitlist runs on the server.
   output: 'static',
-  adapter: node({ mode: 'standalone' }),
+  adapter: vercel(),
 
   i18n: {
     locales: ['en', 'es'],
