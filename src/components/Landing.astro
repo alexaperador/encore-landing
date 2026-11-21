@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from './sections/Hero.astro';
+import Discover from './sections/Discover.astro';
+import PlanCards from './sections/PlanCards.astro';
+import Reminders from './sections/Reminders.astro';
+import History from './sections/History.astro';
+import Waitlist from './sections/Waitlist.astro';
+import { t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = t(lang);
+---
+<BaseLayout lang={lang} route="home" title={copy.meta.title} description={copy.meta.description}>
+  <Hero lang={lang} />
+  <Discover lang={lang} />
+  <PlanCards lang={lang} />
+  <Reminders lang={lang} />
+  <History lang={lang} />
+  <Waitlist lang={lang} />
+</BaseLayout>

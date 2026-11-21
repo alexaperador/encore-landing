@@ -1,0 +1,35 @@
+---
+import { languages, langs, routes, t, type Lang, type RouteKey } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+  class?: string;
+}
+const { lang, route, class: className = '' } = Astro.props;
+const copy = t(lang);
+---
+<!-- Styled as the app's segmented control: espresso track, coffee active pill -->
+<nav aria-label={copy.a11y.language} class={className}>
+  <ul class="flex items-center rounded-[0.95rem] bg-white/[0.07] p-1 text-[0.8125rem] font-semibold">
+    {langs.map((code) => {
+      const current = code === lang;
+      return (
+        <li>
+          <a
+            href={routes[route][code]}
+            hreflang={languages[code].htmlLang}
+            lang={languages[code].htmlLang}
+            aria-current={current ? 'true' : undefined}
+            class:list={[
+              'grid h-10 min-w-11 place-items-center rounded-[0.75rem] px-2.5 transition-colors duration-150',
+              current ? 'bg-coffee text-white' : 'text-beige/70 hover:text-white',
+            ]}>
+            <span aria-hidden="true">{languages[code].short}</span>
+            <span class="sr-only">{languages[code].label}</span>
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>

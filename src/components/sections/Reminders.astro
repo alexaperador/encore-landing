@@ -1,0 +1,49 @@
+---
+import { Bell, Ticket } from '@lucide/astro';
+import Phone from '@/components/mockups/Phone.astro';
+import { screen } from '@/lib/screens';
+import { t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = t(lang);
+const r = copy.reminders;
+---
+<section id="reminders" aria-labelledby="reminders-title" data-ground="dark" class="section overflow-hidden bg-espresso text-white">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    <div class="absolute top-1/2 right-[-12rem] size-[52rem] -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(210_130_77/0.22),transparent)]"></div>
+  </div>
+
+  <div class="wrap relative grid items-center gap-16 md:grid-cols-[1fr_auto] md:gap-12 lg:gap-24">
+    <div>
+      <p class="label-caps">{r.eyebrow}</p>
+      <h2 id="reminders-title" class="mt-4 max-w-[14ch] text-headline font-bold">{r.title}</h2>
+      <p class="mt-5 max-w-[34rem] text-lead text-beige/75">{r.lead}</p>
+
+      <!-- The four reminder options the app offers, laid out on the way to the concert -->
+      <ol class="relative mt-12 max-w-[26rem]" aria-label={r.scheduleLabel}>
+        <span aria-hidden="true" class="absolute top-5 bottom-5 left-[1.3125rem] w-px bg-gradient-to-b from-peach/50 via-peach/30 to-peach"></span>
+        {r.options.map((option) => (
+          <li class="relative flex items-center gap-4 py-2.5">
+            <span class="relative grid size-11 shrink-0 place-items-center rounded-[0.875rem] bg-coffee text-peach">
+              <Bell class="size-5" stroke-width={2.1} aria-hidden="true" />
+            </span>
+            <span class="text-[1.125rem] font-semibold text-beige">{option}</span>
+          </li>
+        ))}
+        <li class="relative flex items-center gap-4 py-2.5">
+          <span class="relative grid size-11 shrink-0 place-items-center rounded-[0.875rem] bg-peach text-espresso">
+            <Ticket class="size-5" stroke-width={2.1} aria-hidden="true" />
+          </span>
+          <span class="text-[1.125rem] font-bold text-peach">{r.concert}</span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="flex justify-center">
+      <Phone src={screen(lang, 'alerts')} alt={copy.a11y.shotAlerts} />
+    </div>
+  </div>
+</section>

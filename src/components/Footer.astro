@@ -1,0 +1,82 @@
+---
+import { Mail } from '@lucide/astro';
+import Logo from './Logo.astro';
+import { path, sectionHref, t, type Lang, type RouteKey } from '@/i18n';
+import { site } from '@/config/site';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+}
+const { lang, route } = Astro.props;
+const copy = t(lang);
+const onHome = route === 'home';
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: copy.footer.product,
+    links: [
+      { href: sectionHref(lang, 'discover', onHome), label: copy.nav.discover },
+      { href: sectionHref(lang, 'plan', onHome), label: copy.nav.plan },
+      { href: sectionHref(lang, 'reminders', onHome), label: copy.nav.reminders },
+      { href: sectionHref(lang, 'history', onHome), label: copy.nav.history },
+    ],
+  },
+  {
+    title: copy.footer.company,
+    links: [
+      { href: sectionHref(lang, 'waitlist', onHome), label: copy.footer.waitlist },
+      { href: `mailto:${site.contactEmail}`, label: copy.footer.contact },
+    ],
+  },
+  {
+    title: copy.footer.legal,
+    links: [
+      { href: path('privacy', lang), label: copy.footer.privacy },
+      { href: path('terms', lang), label: copy.footer.terms },
+    ],
+  },
+];
+---
+<footer data-ground="dark" class="bg-espresso text-white">
+  <div class="wrap pt-20 pb-10 sm:pt-24">
+    <div class="grid gap-14 sm:grid-cols-3 sm:gap-x-8 lg:grid-cols-[1.4fr_repeat(3,1fr)] lg:gap-10">
+      <div class="max-w-xs sm:col-span-3 lg:col-span-1">
+        <a href={path('home', lang)} class="-m-2 inline-flex rounded-xl p-2" aria-label={copy.a11y.home}>
+          <Logo tone="dark" size={40} />
+        </a>
+        <p class="mt-5 text-[0.9375rem] leading-relaxed text-beige/70">{copy.footer.tagline}</p>
+        <a
+          href={`mailto:${site.contactEmail}`}
+          class="mt-6 inline-flex min-h-11 items-center gap-2.5 text-[0.9375rem] font-medium text-peach">
+          <Mail class="size-4.5" aria-hidden="true" stroke-width={1.75} />
+          <span class="nav-link">{site.contactEmail}</span>
+        </a>
+        <p class="mt-1 text-[0.8125rem] text-beige/60">{copy.footer.contactNote}</p>
+      </div>
+
+      <nav aria-label={copy.a11y.footerNav} class="contents">
+        {columns.map((column) => (
+          <div>
+            <h2 class="label-caps">{column.title}</h2>
+            <ul class="mt-4 flex flex-col">
+              {column.links.map((link) => (
+                <li>
+                  <a href={link.href} class="inline-flex min-h-11 items-center text-[0.9375rem] text-beige/85 transition-colors duration-150 hover:text-white">
+                    <span class="nav-link">{link.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </div>
+
+    <div class="mt-16 flex flex-col gap-2 border-t border-white/10 pt-8 text-[0.8125rem] text-beige/60 sm:flex-row sm:justify-between sm:gap-8">
+      <p>© {year} {site.name}. {copy.footer.rights}</p>
+      <p class="max-w-[36rem] sm:text-right">{copy.footer.screens}</p>
+    </div>
+  </div>
+</footer>

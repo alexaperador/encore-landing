@@ -1,0 +1,41 @@
+---
+import '@/styles/global.css';
+import SEO from '@/components/SEO.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { languages, t, type Lang, type RouteKey } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+  /** Page key for the language switch, hreflang and canonical. Omit for pages without translations (404). */
+  route?: RouteKey;
+  title: string;
+  description: string;
+  noindex?: boolean;
+}
+
+const { lang, route, title, description, noindex } = Astro.props;
+const copy = t(lang);
+---
+<!doctype html>
+<html lang={languages[lang].htmlLang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="format-detection" content="telephone=no" />
+    <SEO lang={lang} route={route} title={title} description={description} imageAlt={copy.meta.ogAlt} noindex={noindex} />
+  </head>
+  <body class="min-h-dvh overflow-x-clip">
+    <a
+      href="#main"
+      class="fixed top-3 left-3 z-[60] -translate-y-24 rounded-full bg-espresso px-5 py-3 text-sm font-semibold text-white focus-visible:translate-y-0">
+      {copy.a11y.skip}
+    </a>
+    <Header lang={lang} route={route ?? 'home'} />
+    <main id="main" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <Footer lang={lang} route={route ?? 'home'} />
+  </body>
+</html>

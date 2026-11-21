@@ -1,0 +1,56 @@
+---
+import { Plus, CalendarDays, RotateCcwClock, List } from '@lucide/astro';
+import { t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = t(lang);
+const h = copy.history;
+const tabs = copy.plan.tabs;
+const tabIcons = [CalendarDays, RotateCcwClock, List];
+---
+<section id="history" aria-labelledby="history-title" class="section bg-white">
+  <div class="wrap">
+    <div class="grid gap-6 lg:grid-cols-2 lg:items-end lg:gap-16">
+      <div>
+        <p class="label-caps">{h.eyebrow}</p>
+        <h2 id="history-title" class="mt-4 max-w-[17ch] text-headline font-bold text-espresso">{h.title}</h2>
+      </div>
+      <p class="subtitle max-w-[30rem] lg:justify-self-end lg:pb-2">{h.lead}</p>
+    </div>
+
+    <ul class="mt-14 grid grid-cols-1 gap-3 sm:mt-16 md:grid-cols-2 lg:gap-4">
+      <!-- The app's square + button -->
+      <li class="card-dark flex flex-col justify-between gap-12 p-6 sm:p-8">
+        <span aria-hidden="true" class="grid size-[4.5rem] place-items-center rounded-[1.25rem] bg-roast text-beige shadow-[inset_0_0_0_1px_rgb(255_255_255/0.06)]">
+          <Plus class="size-8" stroke-width={2} />
+        </span>
+        <div>
+          <h3 class="text-title font-bold text-peach">{h.add.title}</h3>
+          <p class="mt-2 max-w-[28rem] text-[1rem] leading-relaxed text-beige/80">{h.add.body}</p>
+        </div>
+      </li>
+
+      <!-- The Past tab -->
+      <li class="card-dark flex flex-col justify-between gap-12 p-6 sm:p-8">
+        <div aria-hidden="true" class="segmented max-w-[26rem] bg-roast">
+          {tabs.map((tab, index) => {
+            const Icon = tabIcons[index]!;
+            return (
+              <span data-active={index === 1 ? '' : undefined}>
+                <Icon class="size-[1.1rem]" stroke-width={2.1} />
+                {tab}
+              </span>
+            );
+          })}
+        </div>
+        <div>
+          <h3 class="text-title font-bold text-peach">{h.past.title}</h3>
+          <p class="mt-2 max-w-[28rem] text-[1rem] leading-relaxed text-beige/80">{h.past.body}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>

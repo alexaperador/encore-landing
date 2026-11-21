@@ -1,0 +1,40 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  /** A real screenshot of the Encore app (920×2000). */
+  src: ImageMetadata;
+  alt: string;
+  class?: string;
+  /** Load immediately (use for the first screen only). */
+  eager?: boolean;
+}
+const { src, alt, class: className = '', eager = false } = Astro.props;
+---
+<figure class:list={['phone relative w-[300px] shrink-0', className]}>
+  <div class="rounded-[var(--radius-device)] bg-[#1d1511] p-[9px] shadow-device ring-1 ring-black/40 ring-inset">
+    <div class="relative overflow-hidden rounded-[2.75rem] bg-[#f2f2f2]">
+      <Picture
+        src={src}
+        alt={alt}
+        widths={[282, 564, 846]}
+        sizes="282px"
+        formats={['avif', 'webp']}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+        class="block aspect-[920/2000] h-auto w-full"
+      />
+      <!-- Dynamic Island; the screenshots leave the top centre of the status bar empty -->
+      <div aria-hidden="true" class="pointer-events-none absolute top-[10px] left-1/2 h-[28px] w-[92px] -translate-x-1/2 rounded-full bg-black"></div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  @media (max-width: 374px) {
+    .phone {
+      zoom: 0.88;
+    }
+  }
+</style>

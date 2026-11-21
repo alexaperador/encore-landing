@@ -1,0 +1,195 @@
+---
+import { Image } from 'astro:assets';
+import { Heart, CalendarDays, RotateCcwClock, List, Share, Bell, MapPin } from '@lucide/astro';
+import artwork from '@/assets/concerts/filipenses.webp';
+import { languages, t, type Lang } from '@/i18n';
+import { chipLabel, pad, remaining } from '@/lib/countdown';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = t(lang);
+const p = copy.plan;
+const tabIcons = [CalendarDays, RotateCcwClock, List];
+
+// The concert saved in the app screenshots (My concerts and My Alerts): 20:00 in Barcelona.
+const concert = {
+  name: 'Filipenses Tour',
+  place: 'Barcelona · Palau Sant Jordi',
+  start: '2027-03-05T20:00:00+01:00',
+  timeZone: 'Europe/Madrid',
+};
+const start = new Date(concert.start);
+const dateLabel = new Intl.DateTimeFormat(languages[lang].htmlLang, {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: '2-digit',
+  timeZone: concert.timeZone,
+}).format(start);
+const timeLabel = new Intl.DateTimeFormat(languages[lang].htmlLang, {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+  timeZone: concert.timeZone,
+}).format(start);
+
+// First paint uses the build time; the script below corrects it on load.
+const left = remaining(start, concert.timeZone);
+const units = [
+  { key: 'd', value: String(left.days) },
+  { key: 'h', value: pad(left.hours) },
+  { key: 'm', value: pad(left.minutes) },
+  { key: 's', value: pad(left.seconds) },
+];
+---
+<section id="plan" aria-labelledby="plan-title" class="section bg-soft">
+  <div class="wrap">
+    <div class="grid gap-6 lg:grid-cols-2 lg:items-end lg:gap-16">
+      <div>
+        <p class="label-caps">{p.eyebrow}</p>
+        <h2 id="plan-title" class="mt-4 max-w-[16ch] text-headline font-bold text-espresso">{p.title}</h2>
+      </div>
+      <p class="subtitle max-w-[32rem] lg:justify-self-end lg:pb-2">{p.lead}</p>
+    </div>
+
+    <!-- Phone: one column. Tablet: wide, two small, wide. Desktop: a 4+2 / 2+4 bento. -->
+    <ul class="mt-14 grid grid-cols-1 gap-3 sm:mt-16 md:grid-cols-2 lg:grid-cols-6 lg:gap-4">
+      <!-- Upcoming · Past · All -->
+      <li class="card-dark flex flex-col justify-between gap-10 p-6 sm:p-8 md:col-span-2 lg:col-span-4">
+        <div>
+          <h3 class="text-title font-bold text-peach">{p.cards.tabs.title}</h3>
+          <p class="mt-2 max-w-[28rem] text-[1rem] leading-relaxed text-beige/80">{p.cards.tabs.body}</p>
+        </div>
+        <div aria-hidden="true" class="segmented bg-roast">
+          {p.tabs.map((tab, index) => {
+            const Icon = tabIcons[index]!;
+            return (
+              <span data-active={index === 0 ? '' : undefined}>
+                <Icon class="size-[1.1rem]" stroke-width={2.1} />
+                {tab}
+              </span>
+            );
+          })}
+        </div>
+      </li>
+
+      <!-- Heart -->
+      <li class="card-dark flex flex-col justify-between gap-10 p-6 sm:p-8 lg:col-span-2">
+        <span aria-hidden="true" class="grid size-16 place-items-center rounded-[1.125rem] bg-roast">
+          <Heart class="size-8 text-heart" fill="currentColor" stroke-width={1.5} />
+        </span>
+        <div>
+          <h3 class="text-title font-bold text-peach">{p.cards.save.title}</h3>
+          <p class="mt-2 text-[1rem] leading-relaxed text-beige/80">{p.cards.save.body}</p>
+        </div>
+      </li>
+
+      <!-- Share -->
+      <li class="card-dark flex flex-col justify-between gap-10 p-6 sm:p-8 lg:col-span-2">
+        <span aria-hidden="true" class="grid size-16 place-items-center rounded-[1.125rem] bg-roast">
+          <Share class="size-7 text-beige" stroke-width={1.9} />
+        </span>
+        <div>
+          <h3 class="text-title font-bold text-peach">{p.cards.share.title}</h3>
+          <p class="mt-2 text-[1rem] leading-relaxed text-beige/80">{p.cards.share.body}</p>
+        </div>
+      </li>
+
+      <!-- Countdown to the concert saved in the app -->
+      <li class="card-dark flex flex-col gap-8 p-5 sm:p-8 md:col-span-2 lg:col-span-4">
+        <div data-countdown data-start={concert.start} data-zone={concert.timeZone} data-labels={JSON.stringify(p.countdown)} class="flex flex-col gap-3">
+          <!-- The concert, as the app's card shows it. Text wraps rather than cuts off on narrow phones. -->
+          <div class="flex overflow-hidden rounded-[1rem] bg-roast">
+            <Image src={artwork} alt="" width={128} height={128} densities={[1, 2]} class="w-[5.5rem] shrink-0 self-stretch object-cover min-[400px]:w-28 sm:w-32" />
+            <div class="flex min-w-0 flex-1 flex-col gap-0.5 py-3 pr-3 pl-3.5 sm:py-4 sm:pr-4 sm:pl-5">
+              <div class="flex items-start justify-between gap-2">
+                <p class="text-[1rem] leading-snug font-bold tracking-[-0.015em] text-peach sm:text-[1.125rem]">{concert.name}</p>
+                <Heart class="mt-0.5 size-5 shrink-0 text-heart" fill="currentColor" stroke-width={1.5} aria-hidden="true" />
+              </div>
+              <p class="flex items-start gap-1 text-[0.8125rem] leading-snug text-beige/85 sm:text-[0.875rem]">
+                <MapPin class="mt-[0.15em] size-3.5 shrink-0" stroke-width={2.2} aria-hidden="true" />
+                <span>{concert.place}</span>
+              </p>
+              <p class="text-[0.8125rem] leading-snug text-beige/70 first-letter:uppercase">
+                <time datetime={concert.start}>{dateLabel} · {timeLabel}</time>
+              </p>
+              <div class="mt-1.5 flex items-center justify-between gap-2">
+                <span data-chip class="chip-count py-1 text-[0.8125rem] whitespace-nowrap">{chipLabel(left.calendarDays, p.countdown)}</span>
+                <Bell class="size-5 shrink-0 text-peach" fill="currentColor" stroke-width={1.5} aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Live time left -->
+          <div role="timer" aria-label={p.countdown.timeLeft} class="grid grid-cols-4 gap-1.5 sm:gap-2">
+            {units.map((unit, index) => (
+              <div class="min-w-0 rounded-tile bg-roast px-1 py-3 text-center sm:py-4">
+                <span data-unit={unit.key} class="tabular block text-[clamp(1.375rem,1rem+2vw,2.125rem)] leading-none font-bold tracking-[-0.03em] text-white">{unit.value}</span>
+                <span class="mt-1.5 block truncate text-[0.75rem] font-medium text-beige/70 sm:text-[0.8125rem]">{p.countdown.units[index]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-title font-bold text-peach">{p.cards.countdown.title}</h3>
+          <p class="mt-2 text-[1rem] leading-relaxed text-beige/80">{p.cards.countdown.body}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<script>
+  import { chipLabel, pad, remaining, type ChipLabels } from '@/lib/countdown';
+
+  // Ticks once a second while the card is on screen and the tab is visible.
+  const root = document.querySelector<HTMLElement>('[data-countdown]');
+  if (root) {
+    const start = new Date(root.dataset.start ?? '');
+    const zone = root.dataset.zone ?? 'UTC';
+    const labels = JSON.parse(root.dataset.labels ?? '{}') as ChipLabels;
+    const chip = root.querySelector<HTMLElement>('[data-chip]');
+    const cells = {
+      d: root.querySelector<HTMLElement>('[data-unit="d"]'),
+      h: root.querySelector<HTMLElement>('[data-unit="h"]'),
+      m: root.querySelector<HTMLElement>('[data-unit="m"]'),
+      s: root.querySelector<HTMLElement>('[data-unit="s"]'),
+    };
+    let timer: number | undefined;
+    let onScreen = false;
+
+    const render = () => {
+      const left = remaining(start, zone);
+      const set = (el: HTMLElement | null, text: string) => {
+        if (el && el.textContent !== text) el.textContent = text;
+      };
+      set(cells.d, String(left.days));
+      set(cells.h, pad(left.hours));
+      set(cells.m, pad(left.minutes));
+      set(cells.s, pad(left.seconds));
+      set(chip, chipLabel(left.calendarDays, labels));
+      if (left.done) stop();
+    };
+
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+    const sync = () => {
+      if (onScreen && !document.hidden) {
+        render();
+        if (timer === undefined && start.getTime() > Date.now()) timer = window.setInterval(render, 1000);
+      } else stop();
+    };
+
+    render();
+    new IntersectionObserver(([entry]) => {
+      onScreen = entry?.isIntersecting ?? false;
+      sync();
+    }).observe(root);
+    document.addEventListener('visibilitychange', sync);
+  }
+</script>

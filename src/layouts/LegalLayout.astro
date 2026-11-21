@@ -1,0 +1,73 @@
+---
+import { ArrowLeft } from '@lucide/astro';
+import BaseLayout from './BaseLayout.astro';
+import { path, t, type Lang, type RouteKey } from '@/i18n';
+import { site } from '@/config/site';
+
+interface Props {
+  lang: Lang;
+  route: Extract<RouteKey, 'privacy' | 'terms'>;
+  heading: string;
+  title: string;
+  description: string;
+}
+const { lang, route, heading, title, description } = Astro.props;
+const copy = t(lang);
+const updated = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en-GB', { dateStyle: 'long', timeZone: 'UTC' }).format(
+  new Date(`${site.legalUpdated}T12:00:00Z`),
+);
+---
+<BaseLayout lang={lang} route={route} title={title} description={description}>
+  <article class="bg-white pt-32 pb-24 sm:pt-40 sm:pb-32">
+    <div class="wrap">
+      <div class="mx-auto max-w-[44rem]">
+        <a href={path('home', lang)} class="inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-medium text-coffee hover:text-espresso">
+          <ArrowLeft class="size-4" stroke-width={2.2} aria-hidden="true" />{copy.legal.back}
+        </a>
+        <h1 class="mt-8 text-headline font-semibold text-espresso">{heading}</h1>
+        <p class="mt-4 text-[0.9375rem] text-coffee">{copy.legal.updated}: <time datetime={site.legalUpdated}>{updated}</time></p>
+        <div class="prose-legal mt-12">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .prose-legal {
+    color: var(--color-ink);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .prose-legal :global(h2) {
+    margin-top: 3rem;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: var(--color-espresso);
+  }
+  .prose-legal :global(p),
+  .prose-legal :global(ul) {
+    margin-top: 1rem;
+    color: var(--color-coffee);
+  }
+  .prose-legal :global(ul) {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .prose-legal :global(li + li) {
+    margin-top: 0.5rem;
+  }
+  .prose-legal :global(strong) {
+    color: var(--color-espresso);
+    font-weight: 600;
+  }
+  .prose-legal :global(a) {
+    color: var(--color-espresso);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+</style>

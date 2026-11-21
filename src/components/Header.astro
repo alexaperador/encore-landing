@@ -1,0 +1,194 @@
+---
+import { Menu, X, Search, Heart, Bell, RotateCcwClock } from '@lucide/astro';
+import Logo from './Logo.astro';
+import LanguageSwitch from './LanguageSwitch.astro';
+import { path, sectionHref, t, type Lang, type RouteKey } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+}
+const { lang, route } = Astro.props;
+const copy = t(lang);
+const onHome = route === 'home';
+
+// Same icons as the app's tab bar
+const links = [
+  { id: 'discover', label: copy.nav.discover, icon: Search },
+  { id: 'plan', label: copy.nav.plan, icon: Heart },
+  { id: 'reminders', label: copy.nav.reminders, icon: Bell },
+  { id: 'history', label: copy.nav.history, icon: RotateCcwClock },
+];
+---
+<header data-header class="fixed inset-x-0 top-0 z-50 pt-3">
+  <div class="wrap">
+    <!-- A floating espresso bar, like the app's tab bar -->
+    <div data-ground="dark" class="relative flex h-16 items-center justify-between gap-3 rounded-card bg-espresso pr-2.5 pl-3.5 shadow-lift ring-1 ring-white/[0.09] ring-inset">
+      <a href={path('home', lang)} class="-m-1 rounded-xl p-1" aria-label={copy.a11y.home}>
+        <Logo tone="dark" />
+      </a>
+
+      <nav aria-label={copy.a11y.mainNav} class="hidden lg:block">
+        <ul class="flex items-center gap-1">
+          {links.map(({ id, label, icon: Icon }) => (
+            <li>
+              <a
+                href={sectionHref(lang, id, onHome)}
+                data-spy={onHome ? id : undefined}
+                class="flex h-11 items-center gap-2 rounded-[0.95rem] px-4 text-[0.9375rem] font-medium text-beige/80 transition-colors duration-150 hover:bg-white/[0.07] hover:text-white aria-[current=location]:bg-coffee aria-[current=location]:text-white">
+                <Icon class="size-[1.1rem]" stroke-width={2} aria-hidden="true" />
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-2.5">
+        <LanguageSwitch lang={lang} route={route} class="hidden sm:block" />
+        <a href={sectionHref(lang, 'waitlist', onHome)} class="btn btn--peach btn--sm hidden sm:inline-flex">{copy.nav.cta}</a>
+        <button
+          type="button"
+          data-menu-button
+          class="group grid size-11 place-items-center rounded-[0.95rem] text-beige transition-colors duration-150 hover:bg-white/[0.07] lg:hidden"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          data-label-open={copy.a11y.openMenu}
+          data-label-close={copy.a11y.closeMenu}>
+          <span class="sr-only" data-menu-label>{copy.a11y.openMenu}</span>
+          <Menu class="size-6 group-aria-expanded:hidden" aria-hidden="true" stroke-width={1.9} />
+          <X class="hidden size-6 group-aria-expanded:block" aria-hidden="true" stroke-width={1.9} />
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu: a dark sheet that drops from the bar -->
+    <div
+      id="mobile-menu"
+      data-menu
+      data-ground="dark"
+      inert
+      class="menu-panel mt-2 max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-card bg-espresso p-3 shadow-lift ring-1 ring-white/[0.09] ring-inset lg:hidden">
+      <nav aria-label={copy.a11y.mainNav}>
+        <ul class="flex flex-col gap-1">
+          {links.map(({ id, label, icon: Icon }) => (
+            <li>
+              <a
+                href={sectionHref(lang, id, onHome)}
+                data-menu-link
+                class="flex min-h-14 items-center gap-3.5 rounded-[0.95rem] px-3 text-[1.25rem] font-semibold tracking-[-0.02em] text-beige transition-colors duration-150 hover:bg-white/[0.06]">
+                <span class="icon-tile size-10"><Icon class="size-5" stroke-width={2} aria-hidden="true" /></span>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div class="mt-3 flex items-center justify-between gap-3 border-t border-white/10 px-1 pt-4 pb-1">
+        <LanguageSwitch lang={lang} route={route} />
+        <a href={sectionHref(lang, 'waitlist', onHome)} data-menu-link class="btn btn--peach flex-1">{copy.nav.cta}</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .menu-panel {
+    position: absolute;
+    left: clamp(1rem, 4vw, 2.5rem);
+    right: clamp(1rem, 4vw, 2.5rem);
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    transform-origin: top right;
+    visibility: hidden;
+    transition:
+      opacity 150ms ease,
+      transform 150ms var(--ease-out),
+      visibility 0s linear 150ms;
+  }
+
+  [data-header][data-open] .menu-panel {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    transition:
+      opacity 200ms ease,
+      transform 220ms var(--ease-out),
+      visibility 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu-panel,
+    [data-header][data-open] .menu-panel {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const button = header?.querySelector<HTMLButtonElement>('[data-menu-button]');
+  const label = button?.querySelector<HTMLElement>('[data-menu-label]');
+  const menu = header?.querySelector<HTMLElement>('[data-menu]');
+
+  if (header && button && menu && label) {
+    const setOpen = (open: boolean) => {
+      header.toggleAttribute('data-open', open);
+      button.setAttribute('aria-expanded', String(open));
+      label.textContent = open ? button.dataset.labelClose ?? '' : button.dataset.labelOpen ?? '';
+      menu.inert = !open;
+    };
+
+    button.addEventListener('click', () => setOpen(button.getAttribute('aria-expanded') !== 'true'));
+    menu.querySelectorAll('[data-menu-link]').forEach((link) => link.addEventListener('click', () => setOpen(false)));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && header.hasAttribute('data-open')) {
+        setOpen(false);
+        button.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (header.hasAttribute('data-open') && !header.contains(event.target as Node)) setOpen(false);
+    });
+
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+
+  // Like the app's tab bar: the section in view gets the coffee pill.
+  const spyLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-spy]'));
+  if (spyLinks.length > 0) {
+    const sections = spyLinks
+      .map((link) => document.getElementById(link.dataset.spy ?? ''))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          spyLinks.forEach((link) => {
+            if (link.dataset.spy === entry.target.id) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          });
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((section) => observer.observe(section));
+
+    // Clear the pill above the first section and below the last.
+    const clear = () => {
+      const first = sections[0];
+      const last = sections[sections.length - 1];
+      if (!first || !last) return;
+      const mid = window.innerHeight / 2;
+      if (first.getBoundingClientRect().top > mid || last.getBoundingClientRect().bottom < mid) {
+        spyLinks.forEach((link) => link.removeAttribute('aria-current'));
+      }
+    };
+    window.addEventListener('scroll', clear, { passive: true });
+  }
+</script>

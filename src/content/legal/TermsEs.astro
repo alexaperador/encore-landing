@@ -1,0 +1,40 @@
+---
+import { path } from '@/i18n';
+import { site } from '@/config/site';
+const mail = site.contactEmail;
+---
+<p>Estas condiciones se aplican cuando visitas la web de Encore o te apuntas a la lista de acceso anticipado. Al usar la web, las aceptas.</p>
+
+<h2>Qué es Encore</h2>
+<p>Encore es una app para encontrar, guardar y llevar la cuenta de tus conciertos. Todavía no se ha lanzado. Esta web presenta la app y te permite apuntarte a una lista de espera para el acceso anticipado.</p>
+
+<h2>La lista de espera</h2>
+<ul>
+  <li>Apuntarte es gratis y puedes darte de baja cuando quieras escribiendo a <a href={`mailto:${mail}`}>{mail}</a>.</li>
+  <li>Estar en la lista no garantiza el acceso en una fecha concreta, ni que vaya a producirse. Nosotros decidimos cómo y cuándo se ofrece el acceso anticipado.</li>
+  <li>Apúntate solo con un correo que sea tuyo o que tengas permiso para usar.</li>
+</ul>
+
+<h2>Vistas previas de la app</h2>
+<p>Las pantallas que ves en esta web son vistas previas de una app en desarrollo. Los artistas, salas, fechas y demás detalles que aparecen son ejemplos, y la app final puede verse y funcionar de otra manera.</p>
+
+<h2>Entradas y otros sitios</h2>
+<p>Encore enlazará a ticketeras y a otras webs que no gestionamos. Las compras que hagas allí son entre tú y ese vendedor, según sus condiciones.</p>
+
+<h2>Uso aceptable</h2>
+<p>No hagas un mal uso de la web: nada de intentar interrumpirla, acceder sin autorización, enviar correos de forma automatizada ni apuntar a otras personas sin su permiso.</p>
+
+<h2>Propiedad intelectual</h2>
+<p>El nombre, el logotipo, el diseño y los contenidos de esta web pertenecen a Encore. No puedes copiarlos ni reutilizarlos sin nuestro permiso por escrito.</p>
+
+<h2>Responsabilidad</h2>
+<p>Trabajamos para que la web sea precisa y esté disponible, pero se ofrece tal cual, sin garantías. En la medida en que la ley lo permita, Encore no responde de las pérdidas derivadas del uso de la web. Nada de lo aquí dispuesto limita los derechos que te reconoce la normativa de consumo.</p>
+
+<h2>Privacidad</h2>
+<p>Cómo tratamos tu correo electrónico se explica en nuestra <a href={path('privacy', 'es')}>Política de privacidad</a>.</p>
+
+<h2>Cambios</h2>
+<p>Podemos actualizar estas condiciones a medida que Encore evolucione. La fecha de arriba indica cuándo se modificaron por última vez.</p>
+
+<h2>Contacto</h2>
+<p>Dudas sobre estas condiciones: <a href={`mailto:${mail}`}>{mail}</a>.</p>

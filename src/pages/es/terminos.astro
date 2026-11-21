@@ -1,0 +1,9 @@
+---
+import LegalLayout from '@/layouts/LegalLayout.astro';
+import Body from '@/content/legal/TermsEs.astro';
+import { t } from '@/i18n';
+const copy = t('es');
+---
+<LegalLayout lang="es" route="terms" heading={copy.footer.terms} title={copy.meta.termsTitle} description={copy.meta.termsDescription}>
+  <Body />
+</LegalLayout>

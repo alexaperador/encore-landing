@@ -1,0 +1,58 @@
+---
+import { ArrowRight, ArrowDown } from '@lucide/astro';
+import Logo from '@/components/Logo.astro';
+import Phone from '@/components/mockups/Phone.astro';
+import { screen } from '@/lib/screens';
+import { t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = t(lang);
+---
+<section aria-labelledby="hero-title" class="hero relative overflow-hidden pt-32 pb-20 sm:pt-36 lg:flex lg:min-h-[100svh] lg:items-center lg:pt-28 lg:pb-12">
+  <!-- Warm light from the logo's peach and terracotta, static -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute top-[12%] right-[-10%] size-[48rem] rounded-full bg-[radial-gradient(closest-side,rgb(255_205_159/0.6),rgb(243_225_206/0.4)_55%,transparent)] max-lg:top-auto max-lg:right-1/2 max-lg:bottom-[-16rem] max-lg:translate-x-1/2"></div>
+  </div>
+
+  <div class="wrap grid items-center gap-16 lg:grid-cols-[1.12fr_0.88fr] lg:gap-6">
+    <div class="mx-auto max-w-[42rem] text-center lg:mx-0 lg:text-left">
+      <div class="enter-fade flex flex-wrap items-center justify-center gap-3 lg:justify-start" style="--i: -4">
+        <Logo wordmark={false} size={56} class="shadow-soft rounded-[23%]" />
+        <p class="chip-count">{copy.hero.badge}</p>
+      </div>
+
+      <h1 id="hero-title" class="mt-8 text-display font-bold text-espresso">
+        {copy.hero.titleLines.map((line, index) => (
+          <span class="enter-line -mb-[0.1em] block overflow-hidden pb-[0.1em] lg:whitespace-nowrap">
+            <span style={`--i: ${index}`}>{index < copy.hero.titleLines.length - 1 ? `${line} ` : line}</span>
+          </span>
+        ))}
+      </h1>
+
+      <p class="subtitle enter-fade mx-auto mt-6 max-w-[35rem] lg:mx-0" style="--i: 0">{copy.hero.lead}</p>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
+        <a href="#waitlist" class="btn enter-fade h-13 px-7 text-[1.0625rem]" style="--i: 1">
+          {copy.hero.primary}
+          <ArrowRight class="btn-arrow size-4.5" stroke-width={2.2} aria-hidden="true" />
+        </a>
+        <a href="#discover" class="btn btn--outline enter-fade h-13 px-7 text-[1.0625rem]" style="--i: 2">
+          {copy.hero.secondary}
+          <ArrowDown class="size-4.5" stroke-width={2.2} aria-hidden="true" />
+        </a>
+      </div>
+      <p class="enter-fade mt-5 text-[0.875rem] text-caramel-ink" style="--i: 3">{copy.hero.note}</p>
+    </div>
+
+    <!-- Real app screen: My concerts -->
+    <div class="relative flex justify-center lg:justify-end">
+      <div class="enter-device relative lg:mr-2">
+        <div aria-hidden="true" class="absolute -bottom-6 left-1/2 h-10 w-[78%] -translate-x-1/2 rounded-[50%] bg-espresso/30 blur-2xl"></div>
+        <Phone src={screen(lang, 'myConcerts')} alt={copy.a11y.shotMyConcerts} eager />
+      </div>
+    </div>
+  </div>
+</section>

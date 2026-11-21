@@ -1,0 +1,9 @@
+---
+import LegalLayout from '@/layouts/LegalLayout.astro';
+import Body from '@/content/legal/PrivacyEs.astro';
+import { t } from '@/i18n';
+const copy = t('es');
+---
+<LegalLayout lang="es" route="privacy" heading={copy.footer.privacy} title={copy.meta.privacyTitle} description={copy.meta.privacyDescription}>
+  <Body />
+</LegalLayout>

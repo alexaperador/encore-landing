@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { path, t, type Lang } from '@/i18n';
+
+// Rendered on request so the page, header and footer follow the language in the URL.
+export const prerender = false;
+
+const pathname = Astro.url.pathname;
+const lang: Lang = pathname === '/es' || pathname.startsWith('/es/') ? 'es' : 'en';
+const copy = t(lang);
+Astro.response.status = 404;
+---
+<BaseLayout lang={lang} title={copy.meta.notFoundTitle} description={copy.notFound.body} noindex>
+  <section class="flex min-h-[80svh] items-center bg-soft pt-32 pb-24">
+    <div class="wrap">
+      <div class="max-w-[36rem]">
+        <p class="font-display text-[clamp(5rem,4rem+6vw,9rem)] leading-none font-semibold tracking-[-0.05em] text-coffee" aria-hidden="true">404</p>
+        <h1 class="mt-6 text-headline font-semibold text-espresso">{copy.notFound.title}</h1>
+        <p class="mt-5 text-lead text-coffee">{copy.notFound.body}</p>
+        <a href={path('home', lang)} class="btn mt-10">{copy.notFound.cta}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
