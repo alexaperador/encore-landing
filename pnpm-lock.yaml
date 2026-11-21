@@ -14,10 +14,7 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.7.6
         version: 3.7.6
-      '@fontsource-variable/funnel-display':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource-variable/funnel-sans':
+      '@fontsource-variable/dm-sans':
         specifier: ^5.3.0
         version: 5.3.0
       '@lucide/astro':
@@ -307,11 +304,8 @@ packages:
   '@emnapi/wasi-threads@2.2.0':
     resolution: {integrity: sha512-JP7OYH38Q7+pyTAe14raZHLQIK7BDKbdwji+Xi3pcd/6QkJYQH3SX4wu6EplGrGJWRepoNzedfm0G3B9Z4e9Rw==}
 
-  '@fontsource-variable/funnel-display@5.3.0':
-    resolution: {integrity: sha512-o/12lyrfflx5QAQFa+hAl0uBeWoBUAm5w71j+KssBseo++XJT3tnveDSg5IAnAdiclQHfFuEZiL5Wn2BjuFxtw==}
-
-  '@fontsource-variable/funnel-sans@5.3.0':
-    resolution: {integrity: sha512-NOgHy3KWMAJdl33XSESit33nI8vlFZh8/0E3tLD7z5jJA5gQoLeUkFcZtxehVVkyYpAZ747tF8O/kAHXXa96ZA==}
+  '@fontsource-variable/dm-sans@5.3.0':
+    resolution: {integrity: sha512-BpUG5bqePiDFMBM4ZtLSlPdAIOM990uB1dlXzIf4aw21yQR7BmykedLXXXMqGWsR18aMLOsbWccwJNh3ztTQaA==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -2268,9 +2262,7 @@ snapshots:
       tslib: 2.9.1
     optional: true
 
-  '@fontsource-variable/funnel-display@5.3.0': {}
-
-  '@fontsource-variable/funnel-sans@5.3.0': {}
+  '@fontsource-variable/dm-sans@5.3.0': {}
 
   '@img/colour@1.1.0':
     optional: true
